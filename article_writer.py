@@ -1,4 +1,5 @@
 import re
+from pathvalidate import sanitize_filename
 
 
 class ArticleWriter:
@@ -55,7 +56,8 @@ class ArticleWriter:
         self._is_first_line = True
         self._article_id = match.group("id")
         self._article_name = match.group("title")
-        self._article_file = open(f"{self._output_dir}{self._article_name.replace(' ', '_')}_{self._article_id}.{self._file_extension}", "w+")
+        file_name = sanitize_filename(f"{self._article_name.replace(' ', '_')}_{self._article_id}")
+        self._article_file = open(f"{self._output_dir}{file_name}.{self._file_extension}", "w+")
 
     def _end_article(self):
         print(f"{self._article_id} {self._article_name}")
