@@ -2,6 +2,11 @@
 
 Tiny Python3 script to extract Wikipedia documents from multiple files.
 
+## Requirements
+
+* Python3
+* pathvalidate (```pip3 install pathvalidate```)
+
 ## Usage
 
 ```sh
