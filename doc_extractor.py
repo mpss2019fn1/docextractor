@@ -1,6 +1,6 @@
 import argparse
-import os
 
+from pathlib import Path
 from validate_directory import ValidateDirectory
 from article_writer import ArticleWriter
 
@@ -10,12 +10,7 @@ def main():
     args = parser.parse_args()
 
     writer = ArticleWriter(output_dir=args.target, file_extension=args.extension)
-    for filename in os.listdir(args.source):
-        with open(f"{args.source}/{filename}", "r") as file:
-            line = file.readline()
-            while line:
-                writer.write_line(line)
-                line = file.readline()
+    _extract_articles_in_directory(Path(args.source), writer)
 
 
 def _create_arg_parser():
@@ -26,6 +21,24 @@ def _create_arg_parser():
                         action=ValidateDirectory)
     parser.add_argument("--extension", required=False, help="output file extension", default="article")
     return parser
+
+
+def _extract_articles_in_directory(parent, article_writer):
+    for file in parent.iterdir():
+        if file.is_file():
+            _extract_articles_from_file(file, article_writer)
+            continue
+
+        if file.is_dir():
+            _extract_articles_in_directory(file, article_writer)
+
+
+def _extract_articles_from_file(file, article_writer):
+    with file.open() as f:
+        line = f.readline()
+        while line:
+            article_writer.write_line(line)
+            line = f.readline()
 
 
 if __name__ == "__main__":
